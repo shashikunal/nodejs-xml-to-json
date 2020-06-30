@@ -1,9 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
-var xmldoc = require("xmldoc");
 const app = express();
-var parseString = require("xml2js").parseString;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,20 +28,27 @@ app.post("/upload", upload.single("file"), (req, res) => {
 
   const fs = require("fs");
   const parseString = require("xml2js").parseString;
+  var iconv = require("iconv-lite");
+
   const fileToParse = `${file}`;
   const outputFilename = `${jsonFile}.json`;
 
-  fs.readFile(fileToParse, { encoding: "utf16le" }, function (err, data) {
+  fs.readFile(fileToParse, { encoding: "ucs-2" }, function (err, data) {
     parseString(data, function (err, result) {
       console.dir(result);
       if (err) {
         console.log(err);
       }
       // do something with the JS object called result, or see below to save as JSON
-      fs.writeFile(`${jsonFile}.json`, JSON.stringify(result), (writeErr) => {
-        if (writeErr) throw writeErr;
-        console.log("The file has been saved to " + outputFilename);
-      });
+      fs.writeFile(
+        `${jsonFile}.json`,
+
+        JSON.stringify(result),
+        (writeErr) => {
+          if (writeErr) throw writeErr;
+          console.log("The file has been saved to " + outputFilename);
+        }
+      );
     });
   });
 });
